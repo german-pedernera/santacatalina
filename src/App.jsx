@@ -141,10 +141,7 @@ export default function App() {
         setWeather({ temp: Math.round(wData.current_weather.temperature), city: gData.city || gData.locality || 'Río Cuarto', icon: '🌤️' });
       } catch (e) {}
     };
-    navigator.geolocation.getCurrentPosition(
-      (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude),
-      () => fetchWeather(-33.1236, -64.3492)
-    );
+    fetchWeather(-33.15, -64.40);
   }, []);
 
   /* Scroll logic */
