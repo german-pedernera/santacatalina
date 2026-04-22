@@ -9,7 +9,7 @@ export default function FeaturedAds({ isAdmin }) {
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({ 
     title: '', name: '', whatsapp: '', description: '', image: '', location: '',
-    instagram: ''
+    facebook: '', instagram: '', tiktok: '', x: '', website: '' 
   });
   const [loading, setLoading] = useState(false);
 
@@ -19,7 +19,11 @@ export default function FeaturedAds({ isAdmin }) {
       const adsList = snap.docs.map(d => ({ 
         ...d.data(), 
         id: d.id,
-        instagram: d.data().instagram || ''
+        facebook: d.data().facebook || '',
+        instagram: d.data().instagram || '',
+        tiktok: d.data().tiktok || '',
+        x: d.data().x || '',
+        website: d.data().website || ''
       }));
       setAds(adsList);
       
@@ -50,7 +54,7 @@ export default function FeaturedAds({ isAdmin }) {
     
     setForm({ 
       title: '', name: '', whatsapp: '', description: '', image: '', location: '',
-      instagram: '' 
+      facebook: '', instagram: '', tiktok: '', x: '', website: '' 
     });
     setEditingId(null);
     setShowForm(false);
@@ -65,7 +69,11 @@ export default function FeaturedAds({ isAdmin }) {
       description: ad.description || '', 
       image: ad.image || '',
       location: ad.location || '',
-      instagram: ad.instagram || ''
+      facebook: ad.facebook || '',
+      instagram: ad.instagram || '',
+      tiktok: ad.tiktok || '',
+      x: ad.x || '',
+      website: ad.website || ''
     });
     setEditingId(ad.id);
     setShowForm(true);
@@ -153,9 +161,23 @@ export default function FeaturedAds({ isAdmin }) {
                 <p className="text-brand-muted text-[0.95rem] leading-relaxed mb-6 opacity-90">{ad.description}</p>
                 
                 {/* Social Media Row */}
-                {ad.instagram && (
+                {(ad.facebook || ad.instagram || ad.tiktok || ad.x || ad.website) && (
                   <div className="flex flex-wrap gap-3 mb-8 justify-center md:justify-start">
-                    <a href={ad.instagram} target="_blank" rel="noreferrer" className="w-10 h-10 bg-[#E4405F]/10 rounded-full flex items-center justify-center text-xl hover:bg-[#E4405F] hover:text-white transition-all shadow-sm" title="Instagram">📸</a>
+                    {ad.website && (
+                      <a href={ad.website.startsWith('http') ? ad.website : `https://${ad.website}`} target="_blank" rel="noreferrer" className="w-10 h-10 bg-brand-primary/10 rounded-full flex items-center justify-center text-xl hover:bg-brand-primary hover:text-white transition-all shadow-sm" title="Sitio Web">🌐</a>
+                    )}
+                    {ad.facebook && (
+                      <a href={ad.facebook} target="_blank" rel="noreferrer" className="w-10 h-10 bg-[#1877F2]/10 rounded-full flex items-center justify-center text-xl hover:bg-[#1877F2] hover:text-white transition-all shadow-sm" title="Facebook">📘</a>
+                    )}
+                    {ad.instagram && (
+                      <a href={ad.instagram} target="_blank" rel="noreferrer" className="w-10 h-10 bg-[#E4405F]/10 rounded-full flex items-center justify-center text-xl hover:bg-[#E4405F] hover:text-white transition-all shadow-sm" title="Instagram">📸</a>
+                    )}
+                    {ad.tiktok && (
+                      <a href={ad.tiktok} target="_blank" rel="noreferrer" className="w-10 h-10 bg-black/10 rounded-full flex items-center justify-center text-xl hover:bg-black hover:text-white transition-all shadow-sm" title="TikTok">🎵</a>
+                    )}
+                    {ad.x && (
+                      <a href={ad.x} target="_blank" rel="noreferrer" className="w-10 h-10 bg-black/10 rounded-full flex items-center justify-center text-lg hover:bg-black hover:text-white transition-all shadow-sm font-black" title="X">X</a>
+                    )}
                   </div>
                 )}
               </div>
@@ -260,8 +282,31 @@ export default function FeaturedAds({ isAdmin }) {
                   <input type="tel" placeholder="Ej: 3584123456" className="auth-input" value={form.whatsapp} onChange={e => setForm({...form, whatsapp: e.target.value})} required />
                 </div>
                 <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase text-brand-primary ml-2">Link Google Maps (Opcional)</label>
+                  <input type="url" placeholder="https://goo.gl/maps/..." className="auth-input" value={form.location} onChange={e => setForm({...form, location: e.target.value})} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-brand-primary/5 pt-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase text-brand-primary ml-2">Facebook (Opcional)</label>
+                  <input type="url" placeholder="Link" className="auth-input text-xs" value={form.facebook} onChange={e => setForm({...form, facebook: e.target.value})} />
+                </div>
+                <div className="space-y-1">
                   <label className="text-[10px] font-black uppercase text-brand-primary ml-2">Instagram (Opcional)</label>
                   <input type="url" placeholder="Link de perfil" className="auth-input text-xs" value={form.instagram} onChange={e => setForm({...form, instagram: e.target.value})} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase text-brand-primary ml-2">TikTok (Opcional)</label>
+                  <input type="url" placeholder="Link" className="auth-input text-xs" value={form.tiktok} onChange={e => setForm({...form, tiktok: e.target.value})} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase text-brand-primary ml-2">X / Twitter (Opcional)</label>
+                  <input type="url" placeholder="Link" className="auth-input text-xs" value={form.x} onChange={e => setForm({...form, x: e.target.value})} />
+                </div>
+                <div className="space-y-1 sm:col-span-2">
+                  <label className="text-[10px] font-black uppercase text-brand-primary ml-2">Sitio Web (Opcional)</label>
+                  <input type="url" placeholder="https://tu-sitio.com" className="auth-input text-xs" value={form.website} onChange={e => setForm({...form, website: e.target.value})} />
                 </div>
               </div>
 
