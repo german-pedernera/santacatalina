@@ -1,3 +1,4 @@
+// Updated logic for likes and display limits
 import { useState, useEffect, useRef } from "react";
 import { db, auth, storage } from "./firebase";
 import { 
