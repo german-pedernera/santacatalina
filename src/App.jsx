@@ -12,7 +12,8 @@ import {
   setDoc,
   where,
   getDocs,
-  writeBatch
+  writeBatch,
+  increment
 } from "firebase/firestore";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -166,6 +167,7 @@ export default function App() {
     if (editPost) {
       await updateDoc(doc(db, POSTS_KEY, editPost.id), payload);
     } else {
+      payload.likes = 0;
       await addDoc(collection(db, POSTS_KEY), payload);
       if (!isAdmin) {
         notifyAdmin('post', payload);
@@ -187,6 +189,7 @@ export default function App() {
     if (editJob) {
       await updateDoc(doc(db, JOBS_KEY, editJob.id), payload);
     } else {
+      payload.likes = 0;
       await addDoc(collection(db, JOBS_KEY), payload);
       if (!isAdmin) {
         notifyAdmin('job', payload);
@@ -205,6 +208,15 @@ export default function App() {
     if (!confirm) return;
     await deleteDoc(doc(db, confirm.type === 'post' ? POSTS_KEY : JOBS_KEY, confirm.id));
     setConfirm(null);
+  };
+
+  const likeItem = async (id, type) => {
+    const key = `liked_${id}`;
+    if (localStorage.getItem(key)) return;
+    localStorage.setItem(key, 'true');
+    await updateDoc(doc(db, type === 'post' ? POSTS_KEY : JOBS_KEY, id), { 
+      likes: increment(1) 
+    });
   };
 
   const handlePublish = () => {
@@ -321,7 +333,7 @@ export default function App() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                   {(searchTerm || section === 'marketplace' || isAdmin || section === 'home' ? filteredPosts : filteredPosts).map(p => (
-                    <PostCard key={p.id} post={p} isAdmin={isAdmin} onDelete={() => setConfirm({id: p.id, type: 'post'})} onEdit={() => {setEditPost(p); setShowPost(true);}} onApprove={() => approveItem(p.id, 'post')} />
+                    <PostCard key={p.id} post={p} isAdmin={isAdmin} onDelete={() => setConfirm({id: p.id, type: 'post'})} onEdit={() => {setEditPost(p); setShowPost(true);}} onApprove={() => approveItem(p.id, 'post')} onLike={() => likeItem(p.id, 'post')} />
                   ))}
                   {(searchTerm ? filteredPosts : posts).length === 0 && (
                     <p className="col-span-full text-center py-10 text-brand-muted font-bold opacity-50 italic">No hay productos disponibles.</p>
@@ -351,7 +363,7 @@ export default function App() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {(searchTerm || section === 'jobs' || isAdmin || section === 'home' ? filteredJobs : filteredJobs).map(j => (
-                    <JobCard key={j.id} job={j} isAdmin={isAdmin} onDelete={() => setConfirm({id: j.id, type: 'job'})} onEdit={() => {setEditPost(j); setShowJob(true);}} onApprove={() => approveItem(j.id, 'job')} />
+                    <JobCard key={j.id} job={j} isAdmin={isAdmin} onDelete={() => setConfirm({id: j.id, type: 'job'})} onEdit={() => {setEditPost(j); setShowJob(true);}} onApprove={() => approveItem(j.id, 'job')} onLike={() => likeItem(j.id, 'job')} />
                   ))}
                   {(searchTerm ? filteredJobs : jobs).length === 0 && (
                     <p className="col-span-full text-center py-10 text-brand-muted font-bold opacity-50 italic">No hay ofertas laborales disponibles.</p>
@@ -439,7 +451,7 @@ export default function App() {
                 <div className="font-serif text-5xl sm:text-7xl font-black text-brand-primary tracking-tighter">
                   $40.000
                 </div>
-                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40 mt-1">Pago Mensual</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#0000FF] mt-1">Pago Mensual</p>
               </div>
             </div>
 

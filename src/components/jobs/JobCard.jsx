@@ -42,6 +42,16 @@ export default function JobCard({ job, isAdmin, onDelete, onEdit, onApprove }) {
               {WA_SVG} <span>{off ? 'Postularme' : 'Contactar'}</span>
             </a>
           )}
+          <button 
+            onClick={(e) => {
+              e.preventDefault();
+              onLike();
+            }}
+            className={`h-11 px-4 flex items-center justify-center gap-2 rounded-[16px] transition-all active:scale-90 ${localStorage.getItem(`liked_${job.id}`) ? 'bg-red-50 text-red-500 shadow-inner' : 'bg-brand-bg text-brand-muted hover:text-red-500'}`}
+          >
+            <span className={`text-xl transition-transform ${localStorage.getItem(`liked_${job.id}`) ? 'scale-110' : 'group-hover:scale-110'}`}>❤️</span>
+            <span className="font-black text-[0.9rem]">{job.likes || 0}</span>
+          </button>
           {isAdmin && (
             <div className="flex gap-1.5">
               {!job.approved && (
