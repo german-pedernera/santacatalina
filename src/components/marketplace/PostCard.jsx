@@ -1,7 +1,7 @@
 import React from 'react';
 import { timeAgo, formatDate, WA_SVG } from '../../utils/helpers';
 
-export default function PostCard({ post, isAdmin, onDelete, onEdit, onApprove }) {
+export default function PostCard({ post, isAdmin, onDelete, onEdit, onApprove, onLike }) {
   const wa = post.whatsapp?.replace(/\D/g, '');
   return (
     <div className={`bg-brand-card rounded-[24px] shadow-sm hover:shadow-mui overflow-hidden transition-all duration-300 flex flex-col hover:-translate-y-1.5 group animate-fade-in-up ${!post.approved && isAdmin ? 'ring-2 ring-brand-primary/20' : ''}`}>

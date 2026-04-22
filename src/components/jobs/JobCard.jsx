@@ -1,7 +1,7 @@
 import React from 'react';
 import { timeAgo, formatDate, WA_SVG } from '../../utils/helpers';
 
-export default function JobCard({ job, isAdmin, onDelete, onEdit, onApprove }) {
+export default function JobCard({ job, isAdmin, onDelete, onEdit, onApprove, onLike }) {
   const wa  = job.whatsapp?.replace(/\D/g, '');
   const off = job.type === 'offer';
   return (
