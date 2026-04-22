@@ -320,7 +320,7 @@ export default function App() {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {(searchTerm ? filteredPosts : (section === 'marketplace' || isAdmin ? filteredPosts : filteredPosts.slice(0, 6))).map(p => (
+                  {(searchTerm || section === 'marketplace' || isAdmin || section === 'home' ? filteredPosts : filteredPosts).map(p => (
                     <PostCard key={p.id} post={p} isAdmin={isAdmin} onDelete={() => setConfirm({id: p.id, type: 'post'})} onEdit={() => {setEditPost(p); setShowPost(true);}} onApprove={() => approveItem(p.id, 'post')} />
                   ))}
                   {(searchTerm ? filteredPosts : posts).length === 0 && (
@@ -350,7 +350,7 @@ export default function App() {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {(searchTerm ? filteredJobs : (section === 'jobs' || isAdmin ? filteredJobs : filteredJobs.slice(0, 4))).map(j => (
+                  {(searchTerm || section === 'jobs' || isAdmin || section === 'home' ? filteredJobs : filteredJobs).map(j => (
                     <JobCard key={j.id} job={j} isAdmin={isAdmin} onDelete={() => setConfirm({id: j.id, type: 'job'})} onEdit={() => {setEditPost(j); setShowJob(true);}} onApprove={() => approveItem(j.id, 'job')} />
                   ))}
                   {(searchTerm ? filteredJobs : jobs).length === 0 && (
