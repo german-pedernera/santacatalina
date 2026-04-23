@@ -33,6 +33,7 @@ import Footer from "./components/common/Footer";
 import TermsModal from "./components/common/TermsModal";
 import FeaturedAds from "./components/common/FeaturedAds";
 import AdContactForm from "./components/common/AdContactForm";
+import DetailModal from "./components/common/DetailModal";
 import { WA_SVG } from "./utils/helpers";
 
 const TELEGRAM_BOT_TOKEN = '8674203998:AAHDiy5tXcRHI9JwXvhrqq9_HvjcmgW-Vi8';
@@ -41,7 +42,7 @@ const TELEGRAM_CHAT_ID   = '1222847704';
 async function notifyAdmin(type, data) {
   const text = `
 🚀 *Nueva Publicación Pendiente*
-📂 *Tipo:* ${type === 'post' ? 'Clasificados' : 'Bolsa Trabajo'}
+📂 *Tipo:* ${type === 'post' ? 'Clasificados de ventas' : 'Oferta y Demanda Laboral'}
 📝 *Título:* ${data.title}
 📞 *WhatsApp:* ${data.whatsapp}
 🕒 *Fecha:* ${new Date().toLocaleString('es-AR')}
@@ -80,6 +81,7 @@ export default function App() {
   const [weather,   setWeather]   = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [hasEntered, setHasEntered] = useState(sessionStorage.getItem('hasEntered') === 'true');
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const lastScrollY  = useRef(0);
 
@@ -327,7 +329,7 @@ export default function App() {
                 <div className="flex justify-between items-center gap-4 mb-8">
                   <div className="flex flex-col min-w-0">
                     <h2 className="font-serif text-2xl sm:text-3xl font-black text-brand-dark truncate">
-                      {searchTerm ? 'Resultados' : section === 'home' ? 'Clasificados' : 'Productos'}
+                      {searchTerm ? 'Resultados' : section === 'home' ? 'Clasificados de ventas' : 'Productos'}
                     </h2>
                     <p className="text-brand-muted text-[10px] sm:text-xs font-black uppercase mt-1 tracking-wider opacity-70 truncate sm:whitespace-normal">Promociona gratis tus productos</p>
                   </div>
@@ -337,13 +339,13 @@ export default function App() {
                       onClick={() => { setEditPost(null); setShowPost(true); }}
                       className="bg-brand-primary text-white px-5 py-2.5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-brand-primary/20 hover:scale-105 transition-all active:scale-95 flex items-center gap-2 whitespace-nowrap"
                     >
-                      <span className="text-lg">＋</span> Publicar
+                      <span className="text-lg">＋</span> Publicar GRATIS
                     </button>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-8">
-                  {(searchTerm || section === 'marketplace' || isAdmin || section === 'home' ? filteredPosts : filteredPosts).map(p => (
-                    <PostCard key={p.id} post={p} isAdmin={isAdmin} onDelete={() => setConfirm({id: p.id, type: 'post'})} onEdit={() => {setEditPost(p); setShowPost(true);}} onApprove={() => approveItem(p.id, 'post')} onLike={() => likeItem(p.id, 'post')} />
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-8 justify-items-center">
+                  {filteredPosts.map(p => (
+                    <PostCard key={p.id} post={p} isAdmin={isAdmin} onDelete={() => setConfirm({id: p.id, type: 'post'})} onEdit={() => {setEditPost(p); setShowPost(true);}} onApprove={() => approveItem(p.id, 'post')} onLike={() => likeItem(p.id, 'post')} onClick={() => setSelectedItem({item: p, type: 'post'})} />
                   ))}
                   {(searchTerm ? filteredPosts : posts).length === 0 && (
                     <p className="col-span-full text-center py-10 text-brand-muted font-bold opacity-50 italic">No hay productos disponibles.</p>
@@ -357,7 +359,7 @@ export default function App() {
                 <div className="flex justify-between items-center gap-4 mb-8 border-t border-brand-primary/5 pt-12">
                   <div className="flex flex-col min-w-0">
                     <h2 className="font-serif text-2xl sm:text-3xl font-black text-brand-dark truncate">
-                      {searchTerm ? 'Empleos' : section === 'home' ? 'Bolsa Trabajo' : 'Ofertas'}
+                      {searchTerm ? 'Empleos' : section === 'home' ? 'Oferta y Demanda Laboral' : 'Ofertas'}
                     </h2>
                     <p className="text-brand-muted text-[10px] sm:text-xs font-black uppercase mt-1 tracking-wider opacity-70 truncate sm:whitespace-normal">Promociona gratis tus ofertas</p>
                   </div>
@@ -367,13 +369,13 @@ export default function App() {
                       onClick={() => { setEditPost(null); setShowJob(true); }}
                       className="bg-brand-primary text-white px-5 py-2.5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-brand-primary/20 hover:scale-105 transition-all active:scale-95 flex items-center gap-2 whitespace-nowrap"
                     >
-                      <span className="text-lg">＋</span> Publicar
+                      <span className="text-lg">＋</span> Publicar GRATIS
                     </button>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-8">
-                  {(searchTerm || section === 'jobs' || isAdmin || section === 'home' ? filteredJobs : filteredJobs).map(j => (
-                    <JobCard key={j.id} job={j} isAdmin={isAdmin} onDelete={() => setConfirm({id: j.id, type: 'job'})} onEdit={() => {setEditJob(j); setShowJob(true);}} onApprove={() => approveItem(j.id, 'job')} onLike={() => likeItem(j.id, 'job')} />
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-8 justify-items-center">
+                  {filteredJobs.map(j => (
+                    <JobCard key={j.id} job={j} isAdmin={isAdmin} onDelete={() => setConfirm({id: j.id, type: 'job'})} onEdit={() => {setEditJob(j); setShowJob(true);}} onApprove={() => approveItem(j.id, 'job')} onLike={() => likeItem(j.id, 'job')} onClick={() => setSelectedItem({item: j, type: 'job'})} />
                   ))}
                   {(searchTerm ? filteredJobs : jobs).length === 0 && (
                     <p className="col-span-full text-center py-10 text-brand-muted font-bold opacity-50 italic">No hay ofertas laborales disponibles.</p>
@@ -418,6 +420,14 @@ export default function App() {
       </div>
 
       {/* ── Modals ── */}
+      {selectedItem && (
+        <DetailModal 
+          item={selectedItem.item} 
+          type={selectedItem.type} 
+          onClose={() => setSelectedItem(null)} 
+          onLike={() => likeItem(selectedItem.item.id, selectedItem.type)} 
+        />
+      )}
       {showPost && <PostForm onSave={savePost} onClose={() => { setShowPost(false); setEditPost(null); }} initialData={editPost} isAdmin={isAdmin} />}
       {showJob  && <JobForm  onSave={saveJob}  onClose={() => { setShowJob(false);  setEditJob(null); }} initialData={editJob} />}
       {showLogin && <AdminLogin onLogin={() => setIsAdmin(true)} onClose={() => setShowLogin(false)} />}

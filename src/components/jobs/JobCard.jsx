@@ -1,11 +1,14 @@
 import React from 'react';
 import { timeAgo, formatDate, WA_SVG } from '../../utils/helpers';
 
-export default function JobCard({ job, isAdmin, onDelete, onEdit, onApprove, onLike }) {
+export default function JobCard({ job, isAdmin, onDelete, onEdit, onApprove, onLike, onClick }) {
   const wa  = job.whatsapp?.replace(/\D/g, '');
   const off = job.type === 'offer';
   return (
-    <div className={`bg-brand-card rounded-[24px] shadow-sm hover:shadow-mui overflow-hidden transition-all duration-300 flex flex-col hover:-translate-y-1.5 animate-fade-in-up ${!job.approved && isAdmin ? 'ring-2 ring-brand-primary/20' : ''}`}>
+    <div 
+      onClick={onClick}
+      className={`bg-brand-card w-full rounded-[24px] shadow-sm hover:shadow-mui overflow-hidden transition-all duration-300 flex flex-col hover:-translate-y-1.5 animate-fade-in-up cursor-pointer ${!job.approved && isAdmin ? 'ring-2 ring-brand-primary/20' : ''}`}
+    >
       {job.photo ? (
         <div className="relative pb-[56%] overflow-hidden bg-brand-bg/50">
           <img src={job.photo} alt="empleo" loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -38,18 +41,10 @@ export default function JobCard({ job, isAdmin, onDelete, onEdit, onApprove, onL
           <span className="text-brand-muted text-[0.68rem] font-bold ml-auto">{timeAgo(job.timestamp)} — {formatDate(job.timestamp)}</span>
         </div>
         
-        <h3 className="font-serif text-[0.95rem] sm:text-[1.05rem] font-black text-brand-dark mb-1 leading-tight">{job.title}</h3>
+        <h3 className="font-serif text-[0.85rem] sm:text-[1rem] font-black text-brand-dark mb-1 leading-tight line-clamp-1">{job.title}</h3>
+        <p className="text-brand-muted text-[0.7rem] sm:text-[0.8rem] mb-3 leading-relaxed flex-1 line-clamp-2">{job.description}</p>
         
-        {(job.email || job.address) && (
-          <div className="flex flex-col gap-1 mb-2">
-            {job.email && <p className="text-brand-primary text-[0.75rem] font-black flex items-center gap-1.5">📧 <span className="opacity-80">{job.email}</span></p>}
-            {job.address && <p className="text-brand-muted text-[0.75rem] font-black flex items-center gap-1.5">📍 <span className="opacity-80">{job.address}</span></p>}
-          </div>
-        )}
-
-        <p className="text-brand-muted text-[0.75rem] sm:text-[0.82rem] line-clamp-4 mb-4 leading-relaxed flex-1">{job.description}</p>
-        
-        <div className="flex flex-col gap-2 mt-auto">
+        <div className="flex flex-col gap-2 mt-auto" onClick={e => e.stopPropagation()}>
           <div className="flex gap-2 items-center">
             {wa && (
               <a 
@@ -63,6 +58,7 @@ export default function JobCard({ job, isAdmin, onDelete, onEdit, onApprove, onL
             <button 
               onClick={(e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 onLike();
               }}
               className={`h-9 sm:h-11 px-2 sm:px-4 flex items-center justify-center gap-1 rounded-[12px] sm:rounded-[16px] transition-all active:scale-90 shrink-0 min-w-[50px] ${localStorage.getItem(`liked_${job.id}`) ? 'bg-red-50 text-red-500 shadow-inner' : 'bg-brand-bg text-brand-muted hover:text-red-500'}`}
@@ -75,10 +71,10 @@ export default function JobCard({ job, isAdmin, onDelete, onEdit, onApprove, onL
           {isAdmin && (
             <div className="flex gap-2 pt-2 border-t border-brand-primary/10 mt-1">
               {!job.approved && (
-                <button className="flex-1 h-9 sm:h-10 flex items-center justify-center rounded-[12px] sm:rounded-[14px] bg-green-500 text-white hover:bg-green-600 btn-mui shadow-lg text-[0.8rem]" onClick={() => onApprove(job)} title="Aprobar">✅ Aprobar</button>
+                <button className="flex-1 h-9 sm:h-10 flex items-center justify-center rounded-[12px] sm:rounded-[14px] bg-green-500 text-white hover:bg-green-600 btn-mui shadow-lg text-[0.8rem]" onClick={(e) => { e.stopPropagation(); onApprove(job); }} title="Aprobar">✅ Aprobar</button>
               )}
-              <button className="flex-1 h-9 sm:h-10 flex items-center justify-center rounded-[12px] sm:rounded-[14px] bg-brand-bg text-brand-dark hover:bg-brand-accent/50 btn-mui text-[0.8rem]" onClick={() => onEdit(job)}>✏️ Editar</button>
-              <button className="flex-1 h-9 sm:h-10 flex items-center justify-center rounded-[12px] sm:rounded-[14px] bg-[#FEF2F2] text-[#EF4444] hover:bg-[#FEE2E2] btn-mui text-[0.8rem]" onClick={() => onDelete(job)}>🗑️ Borrar</button>
+              <button className="flex-1 h-9 sm:h-10 flex items-center justify-center rounded-[12px] sm:rounded-[14px] bg-brand-bg text-brand-dark hover:bg-brand-accent/50 btn-mui text-[0.8rem]" onClick={(e) => { e.stopPropagation(); onEdit(job); }}>✏️ Editar</button>
+              <button className="flex-1 h-9 sm:h-10 flex items-center justify-center rounded-[12px] sm:rounded-[14px] bg-[#FEF2F2] text-[#EF4444] hover:bg-[#FEE2E2] btn-mui text-[0.8rem]" onClick={(e) => { e.stopPropagation(); onDelete(job); }}>🗑️ Borrar</button>
             </div>
           )}
         </div>
