@@ -213,11 +213,19 @@ export default function App() {
 
   const likeItem = async (id, type) => {
     const key = `liked_${id}`;
-    if (localStorage.getItem(key)) return;
-    localStorage.setItem(key, 'true');
-    await updateDoc(doc(db, type === 'post' ? POSTS_KEY : JOBS_KEY, id), { 
-      likes: increment(1) 
-    });
+    const isLiked = localStorage.getItem(key);
+    
+    if (isLiked) {
+      localStorage.removeItem(key);
+      await updateDoc(doc(db, type === 'post' ? POSTS_KEY : JOBS_KEY, id), { 
+        likes: increment(-1) 
+      });
+    } else {
+      localStorage.setItem(key, 'true');
+      await updateDoc(doc(db, type === 'post' ? POSTS_KEY : JOBS_KEY, id), { 
+        likes: increment(1) 
+      });
+    }
   };
 
   const handlePublish = () => {
