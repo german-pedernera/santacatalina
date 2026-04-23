@@ -1,13 +1,32 @@
 import React, { useState } from 'react';
+import { resizeImage } from '../../utils/helpers';
 
 export default function JobForm({ onSave, onClose, initialData }) {
-  const [form, setForm] = useState(initialData || { title: '', description: '', whatsapp: '', type: 'offer', duration: 10 });
+  const [form, setForm] = useState(initialData || { 
+    title: '', 
+    description: '', 
+    whatsapp: '', 
+    address: '',
+    type: 'offer', 
+    duration: 10,
+    photo: '',
+    photos: []
+  });
   const [loading, setLoading] = useState(false);
+
+  const handleImg = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const base64 = await resizeImage(file);
+      setForm({ ...form, photo: base64, photos: [base64] });
+    }
+  };
 
   const handleSave = async (e) => {
     e.preventDefault();
     if (!form.title || !form.description) return alert('Todos los campos son obligatorios');
     setLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 1500));
     await onSave(form);
     setLoading(false);
   };
@@ -67,8 +86,32 @@ export default function JobForm({ onSave, onClose, initialData }) {
             />
           </div>
 
-          <button type="submit" disabled={loading} className="w-full p-[18px] rounded-[20px] bg-brand-primary text-white font-black text-[1rem] shadow-xl hover:opacity-90 active:scale-95 transition-all mt-4 disabled:opacity-50">
-            {loading ? '⏳ Guardando...' : '🚀 Publicar Ahora'}
+          <div>
+            <label className="block text-[0.78rem] font-black text-brand-muted uppercase tracking-widest mb-1.5 ml-1">Foto (Opcional)</label>
+            <div className="relative">
+              <input type="file" accept="image/*" onChange={handleImg} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+              <div className="w-full p-6 rounded-[18px] border-2 border-dashed border-brand-primary/20 bg-brand-bg flex flex-col items-center justify-center gap-2 transition-colors">
+                {!form.photo ? (
+                  <>
+                    <span className="text-3xl">📸</span>
+                    <span className="text-[0.78rem] font-bold text-brand-muted">Toca para subir una foto</span>
+                  </>
+                ) : (
+                  <img src={form.photo} className="h-32 w-full object-contain rounded-[12px]" alt="preview" />
+                )}
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" disabled={loading} className="w-full p-[18px] rounded-[20px] bg-gradient-to-br from-brand-primary to-brand-secondary text-white font-black text-[1rem] shadow-xl hover:opacity-90 active:scale-95 transition-all mt-4 disabled:opacity-50 flex items-center justify-center gap-3">
+            {loading ? (
+              <>
+                <div className="w-5 h-5 border-3 border-white/20 border-t-white rounded-full animate-spin"></div>
+                <span>Guardando...</span>
+              </>
+            ) : (
+              <span>🚀 Publicar Ahora</span>
+            )}
           </button>
         </form>
       </div>

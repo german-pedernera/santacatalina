@@ -73,6 +73,7 @@ export default function App() {
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [showChoice, setShowChoice] = useState(false);
   const [editPost,  setEditPost]  = useState(null);
+  const [editJob,   setEditJob]   = useState(null);
   const [confirm,   setConfirm]   = useState(null); 
   const [menuVis,   setMenuVis]   = useState(true);
   const [loading,   setLoading]   = useState(true);
@@ -313,7 +314,7 @@ export default function App() {
       {!searchTerm && <FeaturedAds isAdmin={isAdmin} />}
 
       {/* ── Main Content ── */}
-      <main className="max-w-[1200px] mx-auto px-4 mt-12 pb-10">
+      <main className="max-w-[1400px] mx-auto px-4 mt-12 pb-10">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24 animate-pulse">
             <div className="w-12 h-12 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-4"></div>
@@ -340,7 +341,7 @@ export default function App() {
                     </button>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-8">
                   {(searchTerm || section === 'marketplace' || isAdmin || section === 'home' ? filteredPosts : filteredPosts).map(p => (
                     <PostCard key={p.id} post={p} isAdmin={isAdmin} onDelete={() => setConfirm({id: p.id, type: 'post'})} onEdit={() => {setEditPost(p); setShowPost(true);}} onApprove={() => approveItem(p.id, 'post')} onLike={() => likeItem(p.id, 'post')} />
                   ))}
@@ -370,9 +371,9 @@ export default function App() {
                     </button>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-8">
                   {(searchTerm || section === 'jobs' || isAdmin || section === 'home' ? filteredJobs : filteredJobs).map(j => (
-                    <JobCard key={j.id} job={j} isAdmin={isAdmin} onDelete={() => setConfirm({id: j.id, type: 'job'})} onEdit={() => {setEditPost(j); setShowJob(true);}} onApprove={() => approveItem(j.id, 'job')} onLike={() => likeItem(j.id, 'job')} />
+                    <JobCard key={j.id} job={j} isAdmin={isAdmin} onDelete={() => setConfirm({id: j.id, type: 'job'})} onEdit={() => {setEditJob(j); setShowJob(true);}} onApprove={() => approveItem(j.id, 'job')} onLike={() => likeItem(j.id, 'job')} />
                   ))}
                   {(searchTerm ? filteredJobs : jobs).length === 0 && (
                     <p className="col-span-full text-center py-10 text-brand-muted font-bold opacity-50 italic">No hay ofertas laborales disponibles.</p>
@@ -417,8 +418,8 @@ export default function App() {
       </div>
 
       {/* ── Modals ── */}
-      {showPost && <PostForm onSave={savePost} onClose={() => { setShowPost(false); setEditPost(null); }} initialData={editPost} />}
-      {showJob  && <JobForm  onSave={saveJob}  onClose={() => { setShowJob(false);  setEditPost(null); }} initialData={editPost} />}
+      {showPost && <PostForm onSave={savePost} onClose={() => { setShowPost(false); setEditPost(null); }} initialData={editPost} isAdmin={isAdmin} />}
+      {showJob  && <JobForm  onSave={saveJob}  onClose={() => { setShowJob(false);  setEditJob(null); }} initialData={editJob} />}
       {showLogin && <AdminLogin onLogin={() => setIsAdmin(true)} onClose={() => setShowLogin(false)} />}
       {confirm && <ConfirmDialog title="Confirmar" msg="¿Borrar?" onOk={deleteItem} onCancel={() => setConfirm(null)} />}
       {showTerms && <TermsModal onClose={() => setShowTerms(false)} />}
@@ -458,7 +459,7 @@ export default function App() {
               
               <div className="text-center sm:text-left">
                 <div className="font-serif text-5xl sm:text-7xl font-black text-brand-primary tracking-tighter">
-                  $40.000
+                  $30.000
                 </div>
                 <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#0000FF] mt-1">Pago Mensual</p>
               </div>
@@ -467,7 +468,7 @@ export default function App() {
             {/* New Promo Line Outside */}
             <div className="mt-12 animate-fade-in-up">
               <h3 className="font-serif text-xl sm:text-3xl font-black text-brand-dark leading-tight tracking-tighter">
-                🔥 Promoción 2x1 Publicidad <span className="text-[#00CCFF]">Mayo / Junio</span>: <span className="text-brand-primary underline decoration-brand-primary/20 decoration-4 underline-offset-4 tracking-normal">$60.000</span>
+                🔥 Promoción 2x1 Publicidad <span className="text-[#00CCFF]">Mayo / Junio</span>: <span className="text-brand-primary underline decoration-brand-primary/20 decoration-4 underline-offset-4 tracking-normal">$50.000</span>
               </h3>
             </div>
           </div>

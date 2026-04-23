@@ -1,24 +1,39 @@
 import React, { useState } from 'react';
 import { resizeImage } from '../../utils/helpers';
 
-export default function PostForm({ onSave, onClose, initialData }) {
-  const [form, setForm] = useState(initialData || { title: '', price: '', description: '', whatsapp: '', photo: '', duration: 10 });
+export default function PostForm({ onSave, onClose, initialData, isAdmin }) {
+  const [form, setForm] = useState(initialData || { 
+    title: '', 
+    price: '', 
+    description: '', 
+    whatsapp: '', 
+    photo: '', 
+    photos: [], 
+    isPremium: false,
+    duration: 10,
+    address: ''
+  });
   const [loading, setLoading] = useState(false);
 
   const handleSave = async (e) => {
     e.preventDefault();
     if (!form.title || !form.description) return alert('Título y descripción son requeridos');
+    
     setLoading(true);
-    // Simular carga de 3 segundos para una sensación más premium
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 1500));
     await onSave(form);
     setLoading(false);
   };
 
   const handleImg = async (e) => {
     const file = e.target.files[0];
-    if (file) setForm({ ...form, photo: await resizeImage(file) });
+    if (file) {
+      const base64 = await resizeImage(file);
+      setForm({ ...form, photo: base64, photos: [base64] });
+    }
   };
+
+
 
   return (
     <div className="fixed inset-0 bg-brand-dark/60 backdrop-blur-md z-[400] flex items-end sm:items-center justify-center p-0 sm:p-6" onClick={e => e.target === e.currentTarget && onClose()}>
@@ -29,6 +44,8 @@ export default function PostForm({ onSave, onClose, initialData }) {
         </div>
         
         <form onSubmit={handleSave} className="space-y-5">
+
+
           <div className="group">
             <label className="block text-[0.78rem] font-black text-brand-muted uppercase tracking-widest mb-1.5 ml-1">Título del producto a vender</label>
             <input className="w-full p-4 rounded-[18px] bg-brand-bg text-brand-dark border-2 border-brand-primary/5 focus:border-brand-primary/40 outline-none transition-all focus:shadow-mui" placeholder="Ej: Bicicleta Rodado 29" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
@@ -77,17 +94,22 @@ export default function PostForm({ onSave, onClose, initialData }) {
           </div>
 
           <div>
-            <label className="block text-[0.78rem] font-black text-brand-muted uppercase tracking-widest mb-1.5 ml-1">Foto del producto</label>
+            <label className="block text-[0.78rem] font-black text-brand-muted uppercase tracking-widest mb-1.5 ml-1">
+              Foto del producto
+            </label>
+
             <div className="relative">
               <input type="file" accept="image/*" onChange={handleImg} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
               <div className="w-full p-6 rounded-[18px] border-2 border-dashed border-brand-primary/20 bg-brand-bg flex flex-col items-center justify-center gap-2 group-hover:border-brand-primary/40 transition-colors">
-                {form.photo ? (
-                  <img src={form.photo} className="h-32 w-full object-contain rounded-[12px]" alt="preview" />
-                ) : (
+                {!form.photo ? (
                   <>
                     <span className="text-3xl">📸</span>
-                    <span className="text-[0.78rem] font-bold text-brand-muted">Toca para subir una foto</span>
+                    <span className="text-[0.78rem] font-bold text-brand-muted">
+                      Toca para subir una foto
+                    </span>
                   </>
+                ) : (
+                  <img src={form.photo} className="h-32 w-full object-contain rounded-[12px]" alt="preview" />
                 )}
               </div>
             </div>

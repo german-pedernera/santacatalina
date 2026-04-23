@@ -76,7 +76,7 @@ export default function AdContactForm() {
     },
     { 
       icon: '💎', 
-      title: 'Solo $40.000 mensuales', 
+      title: 'Solo $30.000 mensuales', 
       desc: 'Una inversión mínima para un retorno máximo. Accede a publicidad de alto impacto por el precio más competitivo del mercado local.' 
     }
   ];
