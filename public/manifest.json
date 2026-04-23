@@ -1,7 +1,7 @@
 {
-  "name": "Santa Catalina Compra Venta",
-  "short_name": "S. Catalina",
-  "description": "Plataforma de compra, venta y empleos de Santa Catalina - Holmberg",
+  "name": "Santa Catalina - Compra Venta y Empleos",
+  "short_name": "Santa Catalina",
+  "description": "Tu mercado local en Holmberg y Río Cuarto. Compra, vende y encontrá empleo.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0F172A",

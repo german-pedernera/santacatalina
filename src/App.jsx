@@ -84,6 +84,20 @@ export default function App() {
   const [selectedItem, setSelectedItem] = useState(null);
 
   const lastScrollY  = useRef(0);
+  const marketplaceRef = useRef(null);
+  const jobsRef = useRef(null);
+
+  const navigateTo = (sec) => {
+    setSection(sec);
+    setSearchTerm('');
+    setTimeout(() => {
+      if (sec === 'home' || sec === 'marketplace') {
+        marketplaceRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (sec === 'jobs') {
+        jobsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
 
   /* Auth Listener */
   useEffect(() => {
@@ -317,6 +331,7 @@ export default function App() {
 
       {/* ── Main Content ── */}
       <main className="max-w-[1400px] mx-auto px-4 mt-12 pb-10">
+        <h1 className="sr-only">Santa Catalina Compra Venta y Empleos - Holmberg y Río Cuarto</h1>
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24 animate-pulse">
             <div className="w-12 h-12 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-4"></div>
@@ -325,7 +340,7 @@ export default function App() {
         ) : (
           <div className="space-y-16">
             {(searchTerm || section === 'home' || section === 'marketplace') && (
-              <section className="animate-fade-in-up">
+              <section ref={marketplaceRef} className="animate-fade-in-up">
                 <div className="flex justify-between items-center gap-4 mb-8">
                   <div className="flex flex-col min-w-0">
                     <h2 className="font-serif text-2xl sm:text-3xl font-black text-brand-dark truncate">
@@ -355,7 +370,7 @@ export default function App() {
             )}
 
             {(searchTerm || section === 'home' || section === 'jobs') && (
-              <section className="animate-fade-in-up delay-100">
+              <section ref={jobsRef} className="animate-fade-in-up delay-100">
                 <div className="flex justify-between items-center gap-4 mb-8 border-t border-brand-primary/5 pt-12">
                   <div className="flex flex-col min-w-0">
                     <h2 className="font-serif text-2xl sm:text-3xl font-black text-brand-dark truncate">
@@ -394,11 +409,11 @@ export default function App() {
       <div className={`fixed bottom-0 left-0 right-0 z-[200] transition-all duration-500 pb-safe ${menuVis ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
         <div className="mx-auto max-w-[500px] mb-6 px-4">
           <div className="flex items-center justify-around bg-brand-card/95 backdrop-blur-3xl rounded-[32px] p-2.5 shadow-[0_-15px_50px_rgba(0,0,0,0.2)] border border-brand-primary/10">
-            <button className={`flex flex-col items-center gap-1 py-2 px-1 min-w-[65px] rounded-2xl transition-all duration-300 ${section === 'home' ? 'text-brand-primary bg-brand-primary/10 -translate-y-2 scale-110 shadow-lg' : 'text-brand-muted'}`} onClick={() => setSection('home')}>
+            <button className={`flex flex-col items-center gap-1 py-2 px-1 min-w-[65px] rounded-2xl transition-all duration-300 ${section === 'home' ? 'text-brand-primary bg-brand-primary/10 -translate-y-2 scale-110 shadow-lg' : 'text-brand-muted'}`} onClick={() => navigateTo('home')}>
               <span className="text-xl sm:text-2xl">🏠</span>
               <span className="text-[10px] font-black uppercase tracking-tighter">Inicio</span>
             </button>
-            <button className={`flex flex-col items-center gap-1 py-2 px-1 min-w-[65px] rounded-2xl transition-all duration-300 ${section === 'marketplace' ? 'text-brand-primary bg-brand-primary/10 -translate-y-2 scale-110 shadow-lg' : 'text-brand-muted'}`} onClick={() => setSection('marketplace')}>
+            <button className={`flex flex-col items-center gap-1 py-2 px-1 min-w-[65px] rounded-2xl transition-all duration-300 ${section === 'marketplace' ? 'text-brand-primary bg-brand-primary/10 -translate-y-2 scale-110 shadow-lg' : 'text-brand-muted'}`} onClick={() => navigateTo('marketplace')}>
               <span className="text-xl sm:text-2xl">🏪</span>
               <span className="text-[10px] font-black uppercase tracking-tighter">Ventas</span>
             </button>
@@ -407,7 +422,7 @@ export default function App() {
               <span className="text-3xl font-bold group-hover:rotate-90 transition-transform">＋</span>
             </button>
 
-            <button className={`flex flex-col items-center gap-1 py-2 px-1 min-w-[65px] rounded-2xl transition-all duration-300 ${section === 'jobs' ? 'text-brand-primary bg-brand-primary/10 -translate-y-2 scale-110 shadow-lg' : 'text-brand-muted'}`} onClick={() => setSection('jobs')}>
+            <button className={`flex flex-col items-center gap-1 py-2 px-1 min-w-[65px] rounded-2xl transition-all duration-300 ${section === 'jobs' ? 'text-brand-primary bg-brand-primary/10 -translate-y-2 scale-110 shadow-lg' : 'text-brand-muted'}`} onClick={() => navigateTo('jobs')}>
               <span className="text-xl sm:text-2xl">💼</span>
               <span className="text-[10px] font-black uppercase tracking-tighter">Empleos</span>
             </button>
